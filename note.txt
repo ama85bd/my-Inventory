@@ -4,3 +4,18 @@ npm i -D @types/node @types/uuid @types/numeral
 npm i -D tw-colors 
 npm i react-redux @reduxjs/toolkit dotenv
 npm i redux-persist
+
+
+
+
+BE=============
+npm init -y
+npm i prisma @prisma/client
+npx prisma init
+npm install typescript
+npx tsc --init
+npm i -D ts-node typescript @types/node
+npx prisma generate
+npx prisma migrate dev --name init
+npm i express body-parser cors dotenv helmet morgan concurrently
+npm i -D nodemon @types/cors @types/express @types/morgan

@@ -15,6 +15,7 @@ const Navbar = () => {
   const toggleSidebar = () => {
     dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
   };
+
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   const toggleDarkMode = () => {
