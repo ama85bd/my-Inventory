@@ -1,6 +1,7 @@
 'use client';
 import { useAppDispatch, useAppSelector } from '@/app/redux';
 import { setIsSidebarCollapsed } from '@/state';
+import Image from 'next/image';
 import {
   Archive,
   CircleDollarSign,
@@ -22,6 +23,8 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
+import Tooltip from '@mui/material/Tooltip';
+import { VisibleTooltip } from '../ToolTip';
 
 interface SidebarLinkProps {
   href: string;
@@ -222,13 +225,23 @@ const Sidebar = () => {
           isSidebarCollapsed ? 'px-5' : 'px-8'
         }`}
       >
-        <div>logo</div>
+        <Link href='/'>
+          <Image
+            src='/icons/logo.png'
+            alt='edstock-logo'
+            width={30}
+            height={40}
+            className={`rounded ${
+              isSidebarCollapsed ? 'w-[22px] h-[18px] ' : 'w-16  h-[20px] '
+            }mt-0`}
+          />
+        </Link>
         <h1
           className={`${
             isSidebarCollapsed ? 'hidden' : 'block'
           } font-extrabold text-2xl`}
         >
-          MYSTOCK
+          MYFINWAY
         </h1>
 
         <button
@@ -248,13 +261,24 @@ const Sidebar = () => {
           isCollapsed={isSidebarCollapsed}
           isDropdown={true}
         />
+        <VisibleTooltip
+          content='This tooltip will now properly appear above all other content, even in overflow-hidden containers!'
+          position='bottom'
+          maxWidth='max-w-sm'
+        >
+          <button className='px-4 py-2 bg-blue-500 text-white rounded'>
+            Hover for tooltip
+          </button>
+        </VisibleTooltip>
+        <Tooltip title='Delete' placement='top-start'>
+          <SidebarLink
+            href='/dashboard'
+            icon={Layout}
+            label='Dashboard'
+            isCollapsed={isSidebarCollapsed}
+          />
+        </Tooltip>
 
-        <SidebarLink
-          href='/dashboard'
-          icon={Layout}
-          label='Dashboard'
-          isCollapsed={isSidebarCollapsed}
-        />
         <SidebarLink
           href='/inventory'
           icon={Archive}
