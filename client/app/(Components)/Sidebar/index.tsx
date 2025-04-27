@@ -23,8 +23,7 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
-import Tooltip from '@mui/material/Tooltip';
-import { VisibleTooltip } from '../ToolTip';
+import { BootstrapTooltip } from '../ToolTip';
 
 interface SidebarLinkProps {
   href: string;
@@ -261,23 +260,30 @@ const Sidebar = () => {
           isCollapsed={isSidebarCollapsed}
           isDropdown={true}
         />
-        <VisibleTooltip
-          content='This tooltip will now properly appear above all other content, even in overflow-hidden containers!'
-          position='bottom'
-          maxWidth='max-w-sm'
+        <BootstrapTooltip
+          title='Dashboard'
+          slotProps={{
+            popper: {
+              modifiers: [
+                {
+                  name: 'offset',
+                  options: {
+                    offset: [0, -14],
+                  },
+                },
+              ],
+            },
+          }}
         >
-          <button className='px-4 py-2 bg-blue-500 text-white rounded'>
-            Hover for tooltip
-          </button>
-        </VisibleTooltip>
-        <Tooltip title='Delete' placement='top-start'>
-          <SidebarLink
-            href='/dashboard'
-            icon={Layout}
-            label='Dashboard'
-            isCollapsed={isSidebarCollapsed}
-          />
-        </Tooltip>
+          <span>
+            <SidebarLink
+              href='/dashboard'
+              icon={Layout}
+              label='Dashboard'
+              isCollapsed={isSidebarCollapsed}
+            />
+          </span>
+        </BootstrapTooltip>
 
         <SidebarLink
           href='/inventory'
