@@ -13,75 +13,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  userId String @id
-  name   String
-  email  String
+model Users{
+  id    String @unique @id @default(uuid()) @db.Uuid
+  firstname String
+  lastname String?
+  phone String
+  email String @unique
+  username String @unique
+  gender String?
+  image String?
+  password String
+  companyId  String @db.Uuid
+  userGroupId  String @db.Uuid
+  // permissiongroupId  String @db.Uuid
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company Companies @relation(fields: [companyId], references: [id])
+  // permissiongroup    PermissionGroup @relation("PermissionGroupUsers", fields: [permissiongroupId], references: [id])
+  updatedPermissionGroups PermissionGroup[] @relation("PermissionGroupUpdatedBy")
+  userGroup UserGroup @relation(fields: [userGroupId], references: [id])
 }
 
-model Products {
-  productId     String      @id
-  name          String
-  price         Float
-  rating        Float?
-  stockQuantity Int
-  Sales         Sales[]
-  Purchases     Purchases[]
+model Companies{
+  id    String @unique @id @default(uuid()) @db.Uuid
+  name String
+  address String
+  type String
+  phone String
+  country String
+  chargeAmount Float
+  vatAmount Float
+  email String @unique
+  username String @unique
+  currency String 
+  password String
+  image String?
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  permissionGroup PermissionGroup[]
+  users Users[]
+  userGroup UserGroup[]
 }
 
-model Sales {
-  saleId      String   @id
-  productId   String
-  timestamp   DateTime
-  quantity    Int
-  unitPrice   Float
-  totalAmount Float
-  product     Products @relation(fields: [productId], references: [productId])
+model PermissionGroup{
+  id    String @unique @id @default(uuid()) @db.Uuid
+  name String
+  isView  Boolean @default(false)
+  isCreate  Boolean @default(false)
+  isUpdate  Boolean @default(false)
+  isDelete  Boolean @default(false)
+  updateBy  String @db.Uuid
+  companyId  String @db.Uuid
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  userGroup UserGroup[]
+  company Companies @relation(fields: [companyId], references: [id])
+
+  // users   Users[]  @relation("PermissionGroupUsers")
+
+  updatedByUser Users @relation("PermissionGroupUpdatedBy", fields: [updateBy], references: [id])
+
 }
 
-model Purchases {
-  purchaseId String   @id
-  productId  String
-  timestamp  DateTime
-  quantity   Int
-  unitCost   Float
-  totalCost  Float
-  product    Products @relation(fields: [productId], references: [productId])
-}
-
-model Expenses {
-  expenseId String   @id
-  category  String
-  amount    Float
-  timestamp DateTime
-}
-
-model SalesSummary {
-  salesSummaryId   String   @id
-  totalValue       Float
-  changePercentage Float?
-  date             DateTime
-}
-
-model PurchaseSummary {
-  purchaseSummaryId String   @id
-  totalPurchased    Float
-  changePercentage  Float?
-  date              DateTime
-}
-
-model ExpenseSummary {
-  expenseSummaryId  String              @id
-  totalExpenses     Float
-  date              DateTime
-  ExpenseByCategory ExpenseByCategory[]
-}
-
-model ExpenseByCategory {
-  expenseByCategoryId String         @id
-  expenseSummaryId    String
-  category            String
-  amount              BigInt
-  date                DateTime
-  expenseSummary      ExpenseSummary @relation(fields: [expenseSummaryId], references: [expenseSummaryId])
+model UserGroup{
+  id    String @unique @id @default(uuid()) @db.Uuid
+  name String
+  companyId  String @db.Uuid
+  permissiongroupId  String @db.Uuid
+  createAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  permissiongroup   PermissionGroup @relation( fields: [permissiongroupId], references: [id])
+  company Companies @relation(fields: [companyId], references: [id])
+  users Users[]
+@@unique([companyId, name])  // 👈 This line ensures name is unique **inside** a company
 }
