@@ -25,11 +25,9 @@ model Users{
   password String
   companyId  String @db.Uuid
   userGroupId  String @db.Uuid
-  // permissiongroupId  String @db.Uuid
   createAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   company Companies @relation(fields: [companyId], references: [id])
-  // permissiongroup    PermissionGroup @relation("PermissionGroupUsers", fields: [permissiongroupId], references: [id])
   updatedPermissionGroups PermissionGroup[] @relation("PermissionGroupUpdatedBy")
   userGroup UserGroup @relation(fields: [userGroupId], references: [id])
 }
@@ -41,8 +39,8 @@ model Companies{
   type String
   phone String
   country String
-  chargeAmount Float
-  vatAmount Float
+  chargeAmount Float?
+  vatAmount Float?
   email String @unique
   username String @unique
   currency String 
@@ -62,29 +60,36 @@ model PermissionGroup{
   isCreate  Boolean @default(false)
   isUpdate  Boolean @default(false)
   isDelete  Boolean @default(false)
-  updateBy  String @db.Uuid
+  updateBy  String? @db.Uuid
   companyId  String @db.Uuid
   createAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  userGroup UserGroup[]
   company Companies @relation(fields: [companyId], references: [id])
-
-  // users   Users[]  @relation("PermissionGroupUsers")
-
-  updatedByUser Users @relation("PermissionGroupUpdatedBy", fields: [updateBy], references: [id])
-
+  updatedByUser Users? @relation("PermissionGroupUpdatedBy", fields: [updateBy], references: [id])
+  userGroups PermissionGroupOnUserGroups[]
 }
 
 model UserGroup{
   id    String @unique @id @default(uuid()) @db.Uuid
   name String
   companyId  String @db.Uuid
-  permissiongroupId  String @db.Uuid
   createAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  permissiongroup   PermissionGroup @relation( fields: [permissiongroupId], references: [id])
   company Companies @relation(fields: [companyId], references: [id])
   users Users[]
-@@unique([companyId, name])  // 👈 This line ensures name is unique **inside** a company
+  permissions PermissionGroupOnUserGroups[]
+  @@unique([companyId, name])  // 👈 This line ensures name is unique **inside** a company
+}
+
+
+model PermissionGroupOnUserGroups {
+  id               String    @unique @id @default(uuid()) @db.Uuid
+  userGroupId      String @db.Uuid
+  permissionGroupId String @db.Uuid
+
+  userGroup       UserGroup @relation(fields: [userGroupId], references: [id])
+  permissionGroup PermissionGroup @relation(fields: [permissionGroupId], references: [id])
+
+  @@unique([userGroupId, permissionGroupId])
 }

@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import userRoutes from './routes/user.route';
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -21,3 +22,6 @@ const port = Number(process.env.PORT) || 3001;
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}`);
 });
+
+// user route
+userRoutes(app);

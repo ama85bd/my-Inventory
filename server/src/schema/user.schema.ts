@@ -8,44 +8,8 @@ export const createUserSchema = object({
     phone: string({
       required_error: 'Phone no is required',
     }),
-    fatherHusbandName: string({
-      required_error: 'Father / Husband Name is required',
-    }),
-    motherName: string({
-      required_error: 'Mother Name is required',
-    }),
-    image: string({
-      required_error: 'Image is required',
-    }),
-    profession: string({
-      required_error: 'Profession is required',
-    }),
-    designation: string({
-      required_error: 'Profession is required',
-    }),
-    officeAddress: string({
-      required_error: 'Profession is required',
-    }),
-    presentAddress: string({
-      required_error: 'Present address is required',
-    }),
-    permanentAddress: string({
-      required_error: 'Permanent address is required',
-    }),
-    expertiseFields: string({
-      required_error: 'Expertise fields is required',
-    }),
-    isAdmin: boolean({
-      required_error: 'isActive is required',
-    }),
-    isActive: boolean({
-      required_error: 'isActive is required',
-    }),
-    isMember: boolean({
-      required_error: 'isMember is required',
-    }),
-    isLifeMember: boolean({
-      required_error: 'isLifeMember is required',
+    username: string({
+      required_error: 'Username is required',
     }),
     password: string({
       required_error: 'Password is required',
@@ -63,3 +27,59 @@ export const createUserSchema = object({
 });
 
 export type CreateUserInput = TypeOf<typeof createUserSchema>;
+
+export const createCompanySchema = object({
+  body: object({
+    name: string({
+      required_error: 'Name is required',
+    }),
+    address: string({
+      required_error: 'Address no is required',
+    }),
+    type: string({
+      required_error: 'Type is required',
+    }),
+    phone: string({
+      required_error: 'Phone is required',
+    }),
+    country: string({
+      required_error: 'Country is required',
+    }),
+    username: string({
+      required_error: 'Country is required',
+    }),
+    currency: string({
+      required_error: 'Country is required',
+    }),
+    password: string({
+      required_error: 'Password is required',
+    }).min(6, 'Password too short - should be 6 chars minimum'),
+    email: string({
+      required_error: 'Email is required',
+    }).email('Not a valid email'),
+  }),
+});
+
+export type CreateCompanyInput = TypeOf<typeof createCompanySchema>;
+
+export const createPermissionGroupSchema = object({
+  body: object({
+    name: string({
+      required_error: 'Name is required',
+    }),
+  }),
+});
+
+export type CreatePermissionGroupInput = TypeOf<
+  typeof createPermissionGroupSchema
+>;
+
+export const createUserGroupSchema = object({
+  body: object({
+    name: string({
+      required_error: 'Name is required',
+    }),
+  }),
+});
+
+export type CreateUserGroupInput = TypeOf<typeof createUserGroupSchema>;
