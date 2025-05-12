@@ -83,3 +83,17 @@ export const createUserGroupSchema = object({
 });
 
 export type CreateUserGroupInput = TypeOf<typeof createUserGroupSchema>;
+
+const params = {
+  params: object({
+    companyId: string({
+      required_error: 'Company Id is required',
+    }),
+  }),
+};
+
+export const getCompanyIdSchema = object({
+  ...params,
+});
+
+export type GetCompanyId = TypeOf<typeof getCompanyIdSchema>;

@@ -2,8 +2,10 @@ import { Prisma } from '@prisma/client';
 import { db } from '../../prisma/client';
 import { hashPassword } from '../utils/hash';
 import { PermissionNames } from '../constant/PermissionNames';
+import { compare } from 'bcryptjs';
+import { omit } from 'lodash';
 
-export const createCompanyService = async (
+export const createTempCompanyService = async (
   data: Prisma.CompaniesCreateInput
 ) => {
   try {
@@ -15,11 +17,46 @@ export const createCompanyService = async (
     });
     if (existing) throw new Error('Email already in use');
 
+    const existingUsername = await db.users.findUnique({
+      where: { username: data.username },
+    });
+    if (existingUsername) throw new Error('Username already in use');
+
     const hashed = await hashPassword(data.password);
+    const company = await db.companies.create({
+      data: { ...data, password: hashed },
+    });
+
+    console.log(company);
+    return true;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const createCompanyService = async (
+  data: Prisma.CompaniesCreateInput,
+  username: string,
+  password: string
+) => {
+  try {
+    if (!data.email) throw new Error('Email required');
+
+    const existing = await db.companies.findUnique({
+      where: { email: data.email },
+    });
+    if (existing) throw new Error('Email already in use');
+
+    const existingUsername = await db.users.findUnique({
+      where: { username: username },
+    });
+    if (existingUsername) throw new Error('Username already in use');
+
+    const hashed = await hashPassword(password);
 
     const result = await db.$transaction(async (tx) => {
       const company = await tx.companies.create({
-        data: { ...data, password: hashed },
+        data: { ...data },
       });
 
       const permissionGroups = await Promise.all(
@@ -63,7 +100,7 @@ export const createCompanyService = async (
           firstname: data.name,
           phone: data.phone,
           email: data.email,
-          username: data.username,
+          username: username,
           password: hashed,
           companyId: company.id,
           userGroupId: userGroup.id,
@@ -89,3 +126,82 @@ export const createCompanyService = async (
     throw new Error(error);
   }
 };
+
+export const deleteCompanyService = async (companyId: string) => {
+  try {
+    return await db.$transaction(async (tx) => {
+      const company = await db.companies.findUnique({
+        where: {
+          id: companyId as string,
+        },
+      });
+
+      if (!company) {
+        return { success: false, error: 'Company not exists' };
+      }
+
+      // Step 1: Delete PermissionGroupOnUserGroups records
+      await tx.permissionGroupOnUserGroups.deleteMany({
+        where: {
+          userGroup: {
+            companyId: companyId,
+          },
+        },
+      });
+
+      // Step 2: Delete PermissionGroups
+      await tx.permissionGroup.deleteMany({
+        where: {
+          companyId: companyId,
+        },
+      });
+
+      // Step 3: Delete Users
+      await tx.users.deleteMany({
+        where: {
+          companyId: companyId,
+        },
+      });
+
+      // Step 4: Delete UserGroups
+      await tx.userGroup.deleteMany({
+        where: {
+          companyId: companyId,
+        },
+      });
+
+      // Step 5: Finally delete the Company
+      await tx.companies.delete({
+        where: {
+          id: companyId,
+        },
+      });
+
+      return { message: 'Company and related data deleted successfully' };
+    });
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export async function validatePassword({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  const user = await db.users.findUnique({
+    where: { email: email },
+  });
+  if (!user) {
+    return false;
+  }
+
+  const isPasswordValid = await compare(password.toString(), user.password);
+
+  if (!isPasswordValid) {
+    return false;
+  }
+  return omit(user, 'password');
+}

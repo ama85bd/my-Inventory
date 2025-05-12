@@ -23,4 +23,7 @@ npm i express body-parser cors dotenv helmet morgan concurrently
 npm i -D nodemon @types/cors @types/express @types/morgan
 npm i zod
 npm install bcryptjs
+npm i --save-dev @types/lodash
+npm i jsonwebtoken
+npm install @types/jsonwebtoken -D
 

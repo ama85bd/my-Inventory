@@ -13,6 +13,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model CompanyPayment {
+  id          String   @id @default(uuid()) @db.Uuid
+  companyId   String   @db.Uuid
+  amount      Float
+  isPaid      Boolean  @default(false)
+  paidAt      DateTime?
+  paymentMethod String? // e.g. "card", "bank_transfer"
+  transactionId String? // optional external payment reference
+  note        String?
+  isDeleted Boolean @default(false)
+  deletedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company     Companies @relation(fields: [companyId], references: [id])
+
+  @@unique([companyId])
+}
+
 model Users{
   id    String @unique @id @default(uuid()) @db.Uuid
   firstname String
@@ -25,12 +44,16 @@ model Users{
   password String
   companyId  String @db.Uuid
   userGroupId  String @db.Uuid
+  isDeleted Boolean @default(false)
+  deletedAt DateTime?
   createAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   company Companies @relation(fields: [companyId], references: [id])
   updatedPermissionGroups PermissionGroup[] @relation("PermissionGroupUpdatedBy")
   userGroup UserGroup @relation(fields: [userGroupId], references: [id])
+  userSession UserSession[]
 }
+
 
 model Companies{
   id    String @unique @id @default(uuid()) @db.Uuid
@@ -42,15 +65,19 @@ model Companies{
   chargeAmount Float?
   vatAmount Float?
   email String @unique
-  username String @unique
   currency String 
   password String
+  username String @unique
+  isActive  Boolean @default(false)
   image String?
   createAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isDeleted Boolean @default(false)
+  deletedAt DateTime?
   permissionGroup PermissionGroup[]
   users Users[]
   userGroup UserGroup[]
+  payments CompanyPayment[]
 }
 
 model PermissionGroup{
@@ -62,6 +89,8 @@ model PermissionGroup{
   isDelete  Boolean @default(false)
   updateBy  String? @db.Uuid
   companyId  String @db.Uuid
+  isDeleted Boolean @default(false)
+  deletedAt DateTime?
   createAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
@@ -76,6 +105,8 @@ model UserGroup{
   companyId  String @db.Uuid
   createAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isDeleted Boolean @default(false)
+  deletedAt DateTime?
   company Companies @relation(fields: [companyId], references: [id])
   users Users[]
   permissions PermissionGroupOnUserGroups[]
@@ -92,4 +123,18 @@ model PermissionGroupOnUserGroups {
   permissionGroup PermissionGroup @relation(fields: [permissionGroupId], references: [id])
 
   @@unique([userGroupId, permissionGroupId])
+}
+
+
+
+model UserSession {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId   String   @db.Uuid
+  userAgent   String  
+  isValid  Boolean @default(false)
+  isDeleted Boolean @default(false)
+  deletedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user     Users @relation(fields: [userId], references: [id])
 }

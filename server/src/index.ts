@@ -5,6 +5,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import userRoutes from './routes/user.route';
+import { deserializeUser } from './middleware/deserializeUser';
+import sessionRoutes from './routes/session';
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -15,6 +17,7 @@ app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 app.use(morgan('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(deserializeUser);
 app.use(cors());
 
 /* SERVER */
@@ -25,3 +28,6 @@ app.listen(port, '0.0.0.0', () => {
 
 // user route
 userRoutes(app);
+
+// login route
+sessionRoutes(app);
