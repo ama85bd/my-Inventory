@@ -25,7 +25,7 @@ export async function reIssueAccessToken({
   if (!decoded || !get(decoded, 'session')) return false;
 
   const session = await db.userSession.findUnique({
-    where: { id: decoded.id },
+    where: { id: decoded.session },
   });
 
   if (!session || !session.isValid) return false;

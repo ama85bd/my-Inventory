@@ -10,6 +10,7 @@ export async function createUserSessionHandler(
 ): Promise<void> {
   // Validate the user's password
   const user: any = await validatePassword(req.body);
+  console.log('user', user);
 
   if (!user) {
     res.status(401).json({ message: 'Invalid email or password' });
@@ -48,8 +49,8 @@ export async function createUserSessionHandler(
   res.status(201).json({
     accessToken,
     refreshToken,
-    name: user.name,
-    userId: user._id,
+    name: user.firstname + ' ' + (user.lastname === null ? '' : user.lastname),
+    userId: user.id,
     email: user.email,
     userType: [
       { active: user.isActive },

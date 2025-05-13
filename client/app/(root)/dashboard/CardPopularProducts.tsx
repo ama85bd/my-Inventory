@@ -1,7 +1,7 @@
 import { useGetDashboardMetricsQuery } from '@/state/api';
 import { ShoppingBag } from 'lucide-react';
 import React from 'react';
-import Rating from '../(Components)/Rating';
+import Rating from '../../(Components)/Rating';
 
 const CardPopularProducts = () => {
   const { data: dashboardMetrics, isLoading } = useGetDashboardMetricsQuery();

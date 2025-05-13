@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import userRoutes from './routes/user.route';
 import { deserializeUser } from './middleware/deserializeUser';
 import sessionRoutes from './routes/session';
+import companyRoutes from './routes/company.route';
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -31,3 +32,6 @@ userRoutes(app);
 
 // login route
 sessionRoutes(app);
+
+// company route
+companyRoutes(app);
