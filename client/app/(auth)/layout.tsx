@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import Image from 'next/image';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
+import { Services } from '../constant/Services';
 
 const layout = async ({ children }: { children: ReactNode }) => {
   const session = await auth();
@@ -20,12 +21,24 @@ const layout = async ({ children }: { children: ReactNode }) => {
         </div>
       </section>
 
-      <section className='relative my-auto flex h-full min-h-screen flex-1 items-center px-5 py-10 bg-gradient-to-br from-teal-800 via-teal-600 to-green-300'>
-        <div className='absolute left-0 top-20 h-20 w-1/2 bg-white clip-arrow px-4 flex items-center'>
-          <h1 className='text-xl font-semibold text-black'>
+      <section className='relative my-auto flex h-full min-h-screen flex-1 items-center px-5 py-10 bg-gradient-to-br from-teal-800 via-teal-700  to-teal-600'>
+        <div className='absolute left-0 top-20 h-24 w-2/3 bg-white clip-arrow px-4 flex items-center'>
+          <h1 className='text-3xl font-semibold text-black'>
             All-in-One Business Solution
           </h1>
         </div>
+
+        <ul className='space-y-2 mt-5'>
+          {Services.map((item, idx) => (
+            <li
+              key={idx}
+              className='flex items-start gap-3 text-white text-base md:text-3xl'
+            >
+              <span className='mt-4 h-2 w-2 rounded-full bg-white'></span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
       </section>
     </main>
   );
