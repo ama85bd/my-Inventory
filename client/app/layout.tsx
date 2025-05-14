@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { auth } from '@/auth';
 import { SessionProvider } from 'next-auth/react';
+import CommonNavbar from './(Components)/CommonNavbar';
+import Navbar from './(Components)/Navbar';
+import DashboardWrapper from './(root)/dashboardWrapper';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,14 +28,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  console.log('session', session);
   return (
     <html lang='en'>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProvider session={session}>
-          <div className='mt-20 pb-20'>{children}</div>
+          <DashboardWrapper session={session}>
+            {' '}
+            {session ? <Navbar /> : <CommonNavbar />}
+            {children}
+          </DashboardWrapper>
         </SessionProvider>
       </body>
     </html>

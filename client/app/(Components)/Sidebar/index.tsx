@@ -41,8 +41,7 @@ const SidebarLink = ({
   isDropdown,
 }: SidebarLinkProps) => {
   const pathname = usePathname();
-  const isActive =
-    pathname === href || (pathname === '/' && href === '/dashboard');
+  const isActive = pathname === href;
 
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -147,9 +146,7 @@ const SidebarLink = ({
                                     ? 'justify-center py-4'
                                     : 'justify-start px-8 py-4'
                                 } hover:text-blue-500 hover:bg-blue-100 gap-3 transition-colors ${
-                                  pathname === subItem.url ||
-                                  (pathname === '/' &&
-                                    subItem.url === '/dashboard')
+                                  pathname === subItem.url
                                     ? 'bg-blue-200 text-white'
                                     : ''
                                 }`}
@@ -227,7 +224,7 @@ const Sidebar = () => {
         <Link href='/'>
           <Image
             src='/icons/logo.png'
-            alt='edstock-logo'
+            alt='MYFINWAY-logo'
             width={30}
             height={40}
             className={`rounded ${

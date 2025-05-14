@@ -6,6 +6,7 @@ npm i react-redux @reduxjs/toolkit dotenv
 npm i redux-persist
 npm install next-auth@beta
 npm i @hookform/resolvers
+npm i tailwindcss-animate
 
 
 
