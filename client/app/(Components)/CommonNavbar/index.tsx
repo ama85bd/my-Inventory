@@ -18,16 +18,16 @@ const CommonNavbar = () => {
         />
         <h1 className={`hidden md:flex font-extrabold text-2xl`}>MYFINWAY</h1>
       </Link>
-      <div className='flex justify-between items-center gap-5  text-lg'>
+      <div className='flex justify-between items-center gap-5  text-lg pr-3'>
         <Link
           href='/sign-in'
-          className='font-bold  hover:!text-teal-600 hover:underline underline-offset-4 transition duration-200'
+          className='font-bold  hover:!text-gray-700 hover:underline underline-offset-4 decoration-[2px]  transition duration-200'
         >
           SIGN IN
         </Link>
         <Link
           href='/sign-up'
-          className='font-bold  hover:!text-teal-600 hover:underline underline-offset-4 transition duration-200'
+          className='font-bold  hover:!text-gray-700 hover:underline underline-offset-4  decoration-[2px] transition duration-200'
         >
           SIGN UP
         </Link>

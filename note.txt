@@ -7,6 +7,14 @@ npm i redux-persist
 npm install next-auth@beta
 npm i @hookform/resolvers
 npm i tailwindcss-animate
+npm i zod
+npm i react-hook-form
+npx shadcn@latest init
+npx shadcn@latest add button
+npx shadcn@latest add form
+npx shadcn@latest add input
+npx shadcn@latest add toast
+
 
 
 
