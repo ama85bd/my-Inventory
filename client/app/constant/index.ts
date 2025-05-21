@@ -1,0 +1,30 @@
+export const FIELD_NAMES = {
+  companyName: 'Company name',
+  firstName: 'First name',
+  lastName: 'Last name',
+  username: 'Username',
+  gender: 'Gender',
+  phone: 'Phone',
+  email: 'Email',
+  country: 'Country',
+  chargeAmount: 'Charge Amount',
+  vatAmount: 'VAT Amount',
+  currency: 'Currency',
+  password: 'Password',
+  image: 'Upload an Image',
+};
+
+export const FIELD_TYPES = {
+  companyName: 'text',
+  firstName: 'text',
+  lastName: 'text',
+  username: 'text',
+  phone: 'text',
+  gender: 'text',
+  currency: 'text',
+  country: 'text',
+  email: 'email',
+  chargeAmount: 'number',
+  vatAmount: 'number',
+  password: 'password',
+};

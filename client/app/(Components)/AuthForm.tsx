@@ -22,10 +22,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import { FIELD_NAMES, FIELD_TYPES } from '@/constants';
 import FileUpload from '@/components/FileUpload';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/hooks/use-toast';
+import { FIELD_NAMES, FIELD_TYPES } from '../constant';
 
 interface Props<T extends FieldValues> {
   schema: ZodType<T>;

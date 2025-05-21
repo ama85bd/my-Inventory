@@ -35,4 +35,6 @@ npm install bcryptjs
 npm i --save-dev @types/lodash
 npm i jsonwebtoken
 npm install @types/jsonwebtoken -D
+npm i @types/multer
+npm i multer
 
