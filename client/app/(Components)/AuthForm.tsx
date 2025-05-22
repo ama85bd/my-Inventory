@@ -22,10 +22,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import FileUpload from '@/components/FileUpload';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/hooks/use-toast';
 import { FIELD_NAMES, FIELD_TYPES } from '../constant';
+import CustomFileUpload from './CustomFileUpload';
+import { useState } from 'react';
 
 interface Props<T extends FieldValues> {
   schema: ZodType<T>;
@@ -41,8 +42,42 @@ const AuthForm = <T extends FieldValues>({
   onSubmit,
 }: Props<T>) => {
   const router = useRouter();
+  const [file, setFile] = useState<File | null>(null);
 
   const isSignIn = type === 'SIGN_IN';
+
+  const uploadFile = async () => {
+    if (!file) return null;
+
+    const timestamp = Date.now();
+    const fileExtension = file.name.slice(file.name.lastIndexOf('.'));
+    const finalName = `${file.name.slice(
+      0,
+      file.name.lastIndexOf('.')
+    )}_userID${timestamp}${fileExtension}`;
+
+    const formData = new FormData();
+    formData.append('file', file, finalName);
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/notice/fileupload`,
+      {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer TOKEN`, // replace with real token
+          'x-refresh': `REFRESH_TOKEN`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message);
+    }
+
+    return finalName;
+  };
 
   const form: UseFormReturn<T> = useForm({
     resolver: zodResolver(schema),
@@ -50,6 +85,27 @@ const AuthForm = <T extends FieldValues>({
   });
 
   const handleSubmit: SubmitHandler<T> = async (data) => {
+    try {
+      const fileName = await uploadFile();
+      const payload = { ...data, fileName };
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_ENDPOINT}/api/notice`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message);
+      }
+    } catch (err: unknown) {
+      console.log(err);
+    }
+
     const result = await onSubmit(data);
 
     if (result.success) {
@@ -96,14 +152,11 @@ const AuthForm = <T extends FieldValues>({
                     {FIELD_NAMES[field.name as keyof typeof FIELD_NAMES]}
                   </FormLabel>
                   <FormControl>
-                    {field.name === 'university_card' ? (
-                      <FileUpload
-                        type='image'
-                        accept='image/*'
-                        placeholder='Upload your ID'
-                        folder='ids'
-                        variant='dark'
-                        onFileChange={field.onChange}
+                    {field.name === 'image' ? (
+                      <CustomFileUpload
+                        label='Upload Notice Document'
+                        accept='.jpg,.jpeg,.png,.pdf,.xlsx,.doc,.docx'
+                        onFileSelect={setFile}
                       />
                     ) : (
                       <Input

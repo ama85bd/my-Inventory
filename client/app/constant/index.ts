@@ -1,10 +1,12 @@
 export const FIELD_NAMES = {
-  companyName: 'Company name',
+  name: 'Company name',
   firstName: 'First name',
   lastName: 'Last name',
   username: 'Username',
   gender: 'Gender',
+  address: 'Address',
   phone: 'Phone',
+  type: 'Type',
   email: 'Email',
   country: 'Country',
   chargeAmount: 'Charge Amount',
@@ -15,11 +17,13 @@ export const FIELD_NAMES = {
 };
 
 export const FIELD_TYPES = {
-  companyName: 'text',
+  name: 'text',
+  address: 'text',
   firstName: 'text',
   lastName: 'text',
   username: 'text',
   phone: 'text',
+  type: 'text',
   gender: 'text',
   currency: 'text',
   country: 'text',
